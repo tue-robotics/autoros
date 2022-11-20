@@ -1,3 +1,44 @@
 {
-  "presets": ["@babel/preset-env"]
+  "env": {
+    "cjs": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "14"
+            }
+          }
+        ]
+      ],
+    },
+    "esm": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "browsers": ">1%"
+            },
+            "modules": false
+          }
+        ]
+      ],
+    },
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "14"
+            }
+          }
+        ]
+      ],
+      "plugins": [
+        "istanbul",
+      ]
+    }
+  }
 }

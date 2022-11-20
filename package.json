@@ -14,12 +14,18 @@
     "dist",
     "src"
   ],
-  "main": "src/index.js",
-  "module": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "browser": "dist/index.umd.js",
   "source": "src/index.js",
   "scripts": {
-    "prebuild": "npm run lint",
-    "build": "babel src --out-dir dist",
+    "clean": "rimraf dist/",
+    "prebuild": "npm run lint && npm run clean",
+    "build": "npm run build:cjs && npm run build:umd && npm run build:umd:min && npm run build:esm",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir dist --out-file-extension .cjs --source-maps",
+    "build:umd": "cross-env BABEL_ENV=umd babel src --out-dir dist --out-file-extension .umd.js --source-maps",
+    "build:umd:min": "cross-env BABEL_ENV=umd babel src --out-dir dist --out-file-extension .umd.min.js --minified --source-maps",
+    "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir dist --out-file-extension .mjs --source-maps",
     "postbuild": "npm run deps",
     "deps": "npm run deps:missing && npm run deps:extra",
     "deps:missing": "dependency-check . --missing",
@@ -28,7 +34,7 @@
     "doc": "jsdoc -c jsdoc_conf.json",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "test": "mocha --require @babel/register test/*.js",
+    "test": "cross-env BABEL_ENV=cjs mocha --require @babel/register test/*.js",
     "version": "npm run build",
     "patch": "npm version patch",
     "minor": "npm version minor",
@@ -36,6 +42,7 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "eventemitter2": "^6.4.0",
     "roslib": "^1.2.0"
   },
